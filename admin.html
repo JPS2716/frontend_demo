@@ -18,7 +18,7 @@
             </div>
 
             <ul class="nav-menu">
-                <li class="nav-item active" data-target="user-manage-view">
+                <li class="nav-item active" data-target="dashboard-view">
                     <span class="icon">👥</span> User Management
                 </li>
                 <li class="nav-item" data-target="dept-manage-view">
@@ -46,20 +46,55 @@
                     <input type="text" placeholder="Search accounts...">
                 </div>
                 <div class="header-actions">
-                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="window.location.href='login.html'">Logout</button>
-                    <button class="btn-primary" onclick="alert('Open Add Dialog')">+ Add Account</button>
+                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="adminApp.logout()">Logout</button>
                     <button class="icon-btn">⚙️</button>
                 </div>
             </header>
 
             <main class="content-area">
 
-                <!-- 1. User Management -->
-                <div id="user-manage-view" class="view-section active">
-                    <h1 class="page-title">User Management</h1>
+                <!-- 1. User Management (Dashboard) -->
+                <div id="dashboard-view" class="view-section active">
+                    <h1 class="page-title">Admin Dashboard</h1>
                     <p class="page-subtitle">Configure system users, assignments, and structural roles.</p>
 
+                    <!-- Stats Row -->
+                    <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="stat-card">
+                            <div class="stat-title">Total Users</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" id="dash-admin-users">0</div>
+                                <span style="font-size:1.5rem">👥</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Departments</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" id="dash-admin-depts">0</div>
+                                <span style="font-size:1.5rem">🏢</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Active Roles</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" id="dash-admin-roles">5</div>
+                                <span style="font-size:1.5rem">🛡️</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color:#16a34a">System Health</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" style="color:#16a34a">100%</div>
+                                <span style="font-size:1.5rem">⚙️</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="data-section">
+                        <div class="data-section-header">
+                            <div class="data-section-title">Recent Users</div>
+                            <button class="btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem" onclick="alert('Viewing all users')">View All</button>
+                        </div>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -70,28 +105,8 @@
                                     <th style="text-align:right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="font-weight:600">Yaswanth Kumar</td>
-                                    <td><span class="badge" style="background:#cbd5e1; color:#0f172a">Requestor</span></td>
-                                    <td>IT Services</td>
-                                    <td><span class="badge allocated">Active</span></td>
-                                    <td style="text-align:right"><button class="btn-secondary" style="font-size:0.75rem">Edit Access</button></td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight:600">Sarah Jenkins</td>
-                                    <td><span class="badge pending" style="background:#dbeafe; color:#1d4ed8">Dept Head</span></td>
-                                    <td>IT Services (Lead)</td>
-                                    <td><span class="badge allocated">Active</span></td>
-                                    <td style="text-align:right"><button class="btn-secondary" style="font-size:0.75rem">Edit Access</button></td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight:600">Mike Torres</td>
-                                    <td><span class="badge pending">Staff Op</span></td>
-                                    <td>Global</td>
-                                    <td><span class="badge allocated">Active</span></td>
-                                    <td style="text-align:right"><button class="btn-secondary" style="font-size:0.75rem">Edit Access</button></td>
-                                </tr>
+                            <tbody id="dash-users-tbody">
+                                <!-- Populated by JS -->
                             </tbody>
                         </table>
                     </div>
@@ -155,6 +170,7 @@
         </div>
     </div>
 
+    <script src="js/store.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html>

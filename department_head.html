@@ -22,14 +22,14 @@
             </div>
 
             <ul class="nav-menu">
-                <li class="nav-item active" data-target="incoming-requests-view">
+                <li class="nav-item active" data-target="dashboard-view">
+                    <span class="icon">⊞</span> Dashboard
+                </li>
+                <li class="nav-item" data-target="incoming-requests-view">
                     <span class="icon">📥</span> Incoming Requests
                 </li>
                 <li class="nav-item" data-target="dept-resources-view">
                     <span class="icon">🏢</span> Dept Resources
-                </li>
-                <li class="nav-item" data-target="analytics-view">
-                    <span class="icon">📈</span> Analytics
                 </li>
                 <li class="nav-item" data-target="procurement-view">
                     <span class="icon">🛒</span> Procurement
@@ -56,8 +56,7 @@
                     <input type="text" placeholder="Search IT Services...">
                 </div>
                 <div class="header-actions">
-                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="window.location.href='login.html'">Logout</button>
-                    <button class="btn-primary" onclick="deptApp.switchView('procurement-view')">New Procurement</button>
+                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="deptApp.logout()">Logout</button>
                     <button class="icon-btn">🔔</button>
                     <button class="icon-btn">⚙️</button>
                 </div>
@@ -65,8 +64,106 @@
 
             <main class="content-area">
 
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="view-section active">
+                    <h1 class="page-title">Department Dashboard</h1>
+                    <p class="page-subtitle">Overview of <span id="dash-dept-name">your department</span> resources and requests.</p>
+
+                    <!-- Alert Banner -->
+                    <div id="low-stock-alert" style="display:none; background:#fefce8; border:1px solid #fef08a; padding:1rem 1.5rem; border-radius:8px; margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <span style="color:#a16207; font-size:1.5rem; vertical-align:middle; margin-right:0.5rem">⚠️</span>
+                            <strong style="color:#854d0e">Low Stock Alert:</strong>
+                            <span style="color:#a16207; font-size:0.875rem" id="low-stock-text">Some resource types are below the minimum threshold.</span>
+                        </div>
+                        <button class="btn-secondary" style="background:white; border-color:#fde047; color:#854d0e" onclick="deptApp.switchView('procurement-view')">Create Procurement Request</button>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr);">
+                        <div class="stat-card">
+                            <div class="stat-title">Total Resources</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" id="dash-total-res">0</div>
+                                <span style="font-size:1.5rem">📦</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color:#16a34a">Available</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" style="color:#16a34a" id="dash-avail">0</div>
+                                <span style="font-size:1.5rem">📦</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color:#0284c7">Allocated</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" style="color:#0284c7" id="dash-alloc">0</div>
+                                <span style="font-size:1.5rem">📦</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color:#d97706">Maintenance</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" style="color:#d97706" id="dash-maint">0</div>
+                                <span style="font-size:1.5rem">⚠️</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color:#dc2626">Scrap</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" style="color:#dc2626" id="dash-scrap">0</div>
+                                <span style="font-size:1.5rem">⚠️</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Grid -->
+                    <div style="display:flex; gap:1.5rem; align-items:flex-start">
+                        <!-- Left Column -->
+                        <div class="data-section" style="flex:1; margin-bottom:0">
+                            <div class="data-section-header">
+                                <div class="data-section-title">Incoming Requests (Pending)</div>
+                                <button class="btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem" onclick="deptApp.switchView('incoming-requests-view')">View All</button>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Resource</th>
+                                        <th>By</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-inc-req-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="data-section" style="flex:1; margin-bottom:0">
+                            <div class="data-section-header">
+                                <div class="data-section-title">Procurements</div>
+                                <button class="btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem" onclick="deptApp.switchView('procurement-view')">View All</button>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Resource</th>
+                                        <th>Qty</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-proc-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 1. Incoming Requests View -->
-                <div id="incoming-requests-view" class="view-section active">
+                <div id="incoming-requests-view" class="view-section">
                     <h1 class="page-title">Incoming Requests</h1>
                     <p class="page-subtitle">Review pending resource requests from your department staff.</p>
 
@@ -128,46 +225,7 @@
                     </div>
                 </div>
 
-                <!-- 3. Analytics View -->
-                <div id="analytics-view" class="view-section">
-                    <h1 class="page-title">Resource Analytics</h1>
-                    <p class="page-subtitle">Holistic view of resource utilization and stock health.</p>
-
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-title">Total Resources</div>
-                            <div class="stat-value">450</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-title">Available</div>
-                            <div class="stat-value" style="color:#16a34a">124</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-title">Allocated</div>
-                            <div class="stat-value" style="color:#0369a1">295</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-title">Under Maintenance</div>
-                            <div class="stat-value" style="color:#d97706">21</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-title" style="color:#b91c1c">Scrap Rate</div>
-                            <div class="stat-value" style="color:#b91c1c">2.2%</div>
-                        </div>
-                    </div>
-
-                    <div class="form-card" style="max-width:100%">
-                        <h3 class="data-section-title">Monthly Request Trend</h3>
-                        <div class="trend-chart">
-                            <div class="trend-bar" style="height: 30%"></div>
-                            <div class="trend-bar" style="height: 50%"></div>
-                            <div class="trend-bar" style="height: 40%"></div>
-                            <div class="trend-bar" style="height: 80%"></div>
-                            <div class="trend-bar" style="height: 60%"></div>
-                            <div class="trend-bar" style="height: 90%"></div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Removed old Analytics view -->
 
                 <!-- 4. Procurement View -->
                 <div id="procurement-view" class="view-section">
@@ -219,6 +277,7 @@
         </div>
     </div>
 
+    <script src="js/store.js"></script>
     <script src="js/dept_head.js"></script>
 </body>
 </html>

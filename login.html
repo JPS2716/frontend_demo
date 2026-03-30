@@ -108,35 +108,42 @@
 
         <div class="mock-data-panel">
             <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.75rem; font-weight:600">QUICK LOGIN (Click to use mock data)</div>
-            <div class="mock-pill" onclick="quickLogin('req')">User: req</div>
-            <div class="mock-pill" onclick="quickLogin('dept')">User: dept</div>
-            <div class="mock-pill" onclick="quickLogin('staff')">User: staff</div>
-            <div class="mock-pill" onclick="quickLogin('reg')">User: reg</div>
-            <div class="mock-pill" onclick="quickLogin('admin')">User: admin</div>
+            <div class="mock-pill" onclick="quickLogin('yaswanth@resourcex.com')">User: Requestor</div>
+            <div class="mock-pill" onclick="quickLogin('sarah@resourcex.com')">User: Dept Head</div>
+            <div class="mock-pill" onclick="quickLogin('mike@resourcex.com')">User: Staff</div>
+            <div class="mock-pill" onclick="quickLogin('eleanor@resourcex.com')">User: Registrar</div>
+            <div class="mock-pill" onclick="quickLogin('admin@resourcex.com')">User: Admin</div>
         </div>
         <div style="font-size:0.7rem; color:#94a3b8; margin-top:1rem; text-align:center">
             Password automatically defaults to: 123
         </div>
     </div>
 
+    <script src="js/store.js"></script>
     <script>
         function submitLogin(e) {
             e.preventDefault();
-            const user = document.getElementById('username').value.toLowerCase().trim();
+            const email = document.getElementById('username').value.toLowerCase().trim();
+            const password = document.getElementById('password').value; // mocked, we just check email
             
-            if (user === 'req') window.location.href = 'requestor.html';
-            else if (user === 'dept') window.location.href = 'department_head.html';
-            else if (user === 'staff') window.location.href = 'staff.html';
-            else if (user === 'reg') window.location.href = 'registrar.html';
-            else if (user === 'admin') window.location.href = 'admin.html';
-            else {
-                alert('Invalid mock user. Please use: req, dept, staff, reg, or admin.');
+            const user = Store.login(email, password);
+            
+            if (user) {
+                switch(user.role) {
+                    case 'Requestor': window.location.href = 'requestor.html'; break;
+                    case 'Dept Head': window.location.href = 'department_head.html'; break;
+                    case 'Staff': window.location.href = 'staff.html'; break;
+                    case 'Registrar': window.location.href = 'registrar.html'; break;
+                    case 'System Admin': window.location.href = 'admin.html'; break;
+                }
+            } else {
+                alert('User not found. Try one of the quick login options.');
                 document.getElementById('username').focus();
             }
         }
 
-        function quickLogin(user) {
-            document.getElementById('username').value = user;
+        function quickLogin(email) {
+            document.getElementById('username').value = email;
             document.getElementById('password').value = '123';
             // Automatically submit
             document.getElementById('loginForm').dispatchEvent(new Event('submit'));

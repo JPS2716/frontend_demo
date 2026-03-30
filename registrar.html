@@ -48,7 +48,7 @@
                     <input type="text" placeholder="Search system...">
                 </div>
                 <div class="header-actions">
-                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="window.location.href='login.html'">Logout</button>
+                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="regApp.logout()">Logout</button>
                     <button class="icon-btn">🔔</button>
                     <button class="icon-btn">⚙️</button>
                 </div>
@@ -58,10 +58,46 @@
 
                 <!-- 1. Procurement Approvals View -->
                 <div id="procurement-approvals-view" class="view-section active">
-                    <h1 class="page-title">Procurement Approvals</h1>
-                    <p class="page-subtitle">Review acquisition requests pushed up by Department Heads.</p>
+                    <h1 class="page-title">Registrar Dashboard</h1>
+                    <p class="page-subtitle">Overview of procurement requests across the university.</p>
+
+                    <!-- Stats Row -->
+                    <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="stat-card">
+                            <div class="stat-title">Total Procurement</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" id="dash-proc-total">0</div>
+                                <span style="font-size:1.5rem">🛒</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color:#d97706">Pending</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" style="color:#d97706" id="dash-proc-pending">0</div>
+                                <span style="font-size:1.5rem">⏳</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color:#16a34a">Accepted</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" style="color:#16a34a" id="dash-proc-accepted">0</div>
+                                <span style="font-size:1.5rem">✅</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color:#dc2626">Rejected</div>
+                            <div class="stat-value-row">
+                                <div class="stat-value" style="color:#dc2626" id="dash-proc-rejected">0</div>
+                                <span style="font-size:1.5rem">❌</span>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="data-section">
+                        <div class="data-section-header">
+                            <div class="data-section-title">Recent Procurement Requests</div>
+                            <button class="btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem" onclick="alert('Viewing all procurements')">View All</button>
+                        </div>
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -74,29 +110,6 @@
                                         <th style="text-align:right">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="td-id">PROC-819</td>
-                                        <td>Sarah Jenkins (IT)</td>
-                                        <td>Server Blades v2</td>
-                                        <td>10</td>
-                                        <td style="font-size:0.75rem; color:#64748b">Capacity increase required.</td>
-                                        <td style="text-align:right">
-                                            <button class="btn-primary" style="font-size:0.75rem; background:#16a34a" onclick="alert('Procurement Approved. Task passed to Staff.')">Accept</button>
-                                            <button class="btn-danger" style="font-size:0.75rem" onclick="alert('Procurement Rejected.')">Reject</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="td-id">PROC-901</td>
-                                        <td>Dr. Alan (Science)</td>
-                                        <td>Microscope Sets</td>
-                                        <td>5</td>
-                                        <td style="font-size:0.75rem; color:#64748b">Lab equipment upgrade for Spring.</td>
-                                        <td style="text-align:right">
-                                            <button class="btn-primary" style="font-size:0.75rem; background:#16a34a" onclick="alert('Procurement Approved. Task passed to Staff.')">Accept</button>
-                                            <button class="btn-danger" style="font-size:0.75rem" onclick="alert('Procurement Rejected.')">Reject</button>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -158,6 +171,7 @@
         </div>
     </div>
 
+    <script src="js/store.js"></script>
     <script src="js/registrar.js"></script>
 </body>
 </html>
