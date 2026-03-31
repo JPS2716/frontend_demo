@@ -1,58 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResourceX - Registrar Dashboard</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components/layout.css">
+    <link rel="stylesheet" href="../css/components/button.css">
+    <link rel="stylesheet" href="../css/components/card.css">
+    <link rel="stylesheet" href="../css/components/table.css">
+    <link rel="stylesheet" href="../css/components/form.css">
+    <link rel="stylesheet" href="../css/components/badge.css">
+    <link rel="stylesheet" href="../css/components/toast.css">
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ResourceX - Registrar Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components/layout.css">
+    <link rel="stylesheet" href="../css/components/button.css">
+    <link rel="stylesheet" href="../css/components/card.css">
+    <link rel="stylesheet" href="../css/components/table.css">
+    <link rel="stylesheet" href="../css/components/form.css">
+    <link rel="stylesheet" href="../css/components/badge.css">
+    <link rel="stylesheet" href="../css/components/toast.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0">
 </head>
 <body>
 
     <div class="app-container">
         
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo-container">
-                <div class="logo-icon">R</div>
-                <div class="logo-text">ResourceX</div>
-            </div>
-
+        <app-sidebar user-name="Dr. Eleanor Vance" user-role="University Registrar" user-img="https://i.pravatar.cc/150?img=9">
             <ul class="nav-menu">
                 <li class="nav-item active" data-target="procurement-approvals-view">
-                    <span class="icon">💼</span> Procurement Approvals
+                    <span class="material-symbols-outlined">work</span> Procurement Approvals
                 </li>
                 <li class="nav-item" data-target="sys-overview-view">
-                    <span class="icon">👁️</span> Global Requests Overview
+                    <span class="material-symbols-outlined">visibility</span> Global Requests Overview
                 </li>
                 <li class="nav-item" data-target="sys-analytics-view">
-                    <span class="icon">📊</span> System Analytics
+                    <span class="material-symbols-outlined">analytics</span> System Analytics
                 </li>
             </ul>
-
-            <div class="user-profile-widget">
-                <div class="user-avatar">
-                    <img src="https://i.pravatar.cc/150?img=9" alt="User">
-                </div>
-                <div class="user-info">
-                    <span class="user-name">Dr. Eleanor Vance</span>
-                    <span class="user-role">University Registrar</span>
-                </div>
-            </div>
-        </aside>
+        </app-sidebar>
 
         <!-- Main Wrapper -->
         <div class="main-wrapper">
-            <header class="top-header">
-                <div class="search-bar">
-                    <span style="color:#94a3b8">🔍</span>
-                    <input type="text" placeholder="Search system...">
-                </div>
-                <div class="header-actions">
-                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="regApp.logout()">Logout</button>
-                    <button class="icon-btn">🔔</button>
-                    <button class="icon-btn">⚙️</button>
-                </div>
-            </header>
+            <app-header></app-header>
 
             <main class="content-area">
 
@@ -67,28 +63,28 @@
                             <div class="stat-title">Total Procurement</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" id="dash-proc-total">0</div>
-                                <span style="font-size:1.5rem">🛒</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem">shopping_cart</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title" style="color:#d97706">Pending</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" style="color:#d97706" id="dash-proc-pending">0</div>
-                                <span style="font-size:1.5rem">⏳</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#d97706">hourglass_empty</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title" style="color:#16a34a">Accepted</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" style="color:#16a34a" id="dash-proc-accepted">0</div>
-                                <span style="font-size:1.5rem">✅</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#16a34a">check_circle</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title" style="color:#dc2626">Rejected</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" style="color:#dc2626" id="dash-proc-rejected">0</div>
-                                <span style="font-size:1.5rem">❌</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#dc2626">cancel</span>
                             </div>
                         </div>
                     </div>
@@ -171,7 +167,9 @@
         </div>
     </div>
 
-    <script src="js/store.js"></script>
-    <script src="js/registrar.js"></script>
+    <script src="../js/components/app-header.js"></script>
+    <script src="../js/components/app-sidebar.js"></script>
+    <script src="../js/utils/store.js"></script>
+    <script src="../js/pages/registrar.js"></script>
 </body>
 </html>

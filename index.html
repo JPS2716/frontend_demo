@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ResourceX - Enterprise Resource Management</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components/layout.css">
+    <link rel="stylesheet" href="css/components/button.css">
+    <link rel="stylesheet" href="css/components/card.css">
+    <link rel="stylesheet" href="css/pages/landing.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0">
 </head>
 <body class="landing-body">
 
@@ -23,8 +27,8 @@
         </ul>
 
         <div class="landing-actions">
-            <a href="login.html" style="color:var(--text-main); font-weight:500; font-size:0.875rem;">Sign In</a>
-            <a href="requestor.html" class="btn-primary">Get Started</a>
+            <a href="pages/login.html" style="color:var(--text-main); font-weight:500; font-size:0.875rem;">Sign In</a>
+            <a href="pages/requestor.html" class="btn-primary">Get Started</a>
         </div>
     </nav>
 
@@ -35,12 +39,12 @@
                 <h1 class="hero-title">Empower Your <span>Enterprise</span> with ResourceX</h1>
                 <p class="hero-subtitle">A unified platform to orchestrate your global workforce. Manage departments, users, and organizational resources with unprecedented precision and real-time clarity.</p>
                 <div class="hero-actions">
-                    <button class="btn-primary" onclick="window.location.href='requestor.html'">Request Demo</button>
+                    <button class="btn-primary" onclick="window.location.href='pages/requestor.html'">Request Demo</button>
                     <button class="btn-secondary">Explore Features</button>
                 </div>
             </div>
             <div class="hero-visual">
-                <img src="images/hero-dashboard.png" alt="ResourceX Enterprise Dashboard" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <img src="assets/images/hero-dashboard.png" alt="ResourceX Enterprise Dashboard" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
             </div>
         </section>
 
@@ -53,25 +57,23 @@
                 <div class="partner-box">QUANTUM</div>
                 <div class="partner-box">R-Corp</div>
             </div>
-        </section>
-
         <section class="features-section">
             <h2 class="features-title">Designed for Scale</h2>
             <p class="features-subtitle">Modular tools that adapt to your unique organizational structure, providing clarity at every level.</p>
             
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">❖</div>
+                    <div class="material-symbols-outlined" style="font-size:3rem; color:var(--primary-color); margin-bottom:1rem;">business</div>
                     <h3 class="feature-title">Department Management</h3>
                     <p class="feature-desc">Streamline your organizational structure. Define hierarchies, assign budgets, and monitor departmental health in a unified dashboard.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">👤</div>
+                    <div class="material-symbols-outlined" style="font-size:3rem; color:var(--primary-color); margin-bottom:1rem;">person</div>
                     <h3 class="feature-title">User Roles & Permissions</h3>
                     <p class="feature-desc">Granular control over your team's access. Create custom roles and ensure security compliance with enterprise-grade permission mapping.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📈</div>
+                    <div class="material-symbols-outlined" style="font-size:3rem; color:var(--primary-color); margin-bottom:1rem;">trending_up</div>
                     <h3 class="feature-title">Real-time Analytics</h3>
                     <p class="feature-desc">Monitor resource allocation at a glance. Leverage predictive insights to predict shortages and optimize productivity across all sectors.</p>
                 </div>
@@ -94,3 +96,4 @@
 
 </body>
 </html>
+

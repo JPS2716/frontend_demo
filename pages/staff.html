@@ -4,67 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ResourceX - Staff Operations Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components/layout.css">
+    <link rel="stylesheet" href="../css/components/button.css">
+    <link rel="stylesheet" href="../css/components/card.css">
+    <link rel="stylesheet" href="../css/components/table.css">
+    <link rel="stylesheet" href="../css/components/form.css">
+    <link rel="stylesheet" href="../css/components/badge.css">
+    <link rel="stylesheet" href="../css/components/toast.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0">
 </head>
 <body>
 
     <div class="app-container">
         
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo-container">
-                <div class="logo-icon">R</div>
-                <div class="logo-text">ResourceX</div>
-            </div>
-
+        <app-sidebar user-name="Mike Torres" user-role="Operations Staff" user-img="https://i.pravatar.cc/150?img=13">
             <ul class="nav-menu">
                 <li class="nav-item active" data-target="dashboard-view">
-                    <span class="icon">⊞</span> Dashboard
+                    <span class="material-symbols-outlined">dashboard</span> Dashboard
                 </li>
                 <li class="nav-item" data-target="allocations-view">
-                    <span class="icon">🔄</span> Allocation Requests
+                    <span class="material-symbols-outlined">sync_alt</span> Allocation Requests
                 </li>
                 <li class="nav-item" data-target="registration-view">
-                    <span class="icon">🏷️</span> Resource Registration
+                    <span class="material-symbols-outlined">label</span> Resource Registration
                 </li>
                 <li class="nav-item" data-target="manage-view">
-                    <span class="icon">📦</span> Manage Resources
+                    <span class="material-symbols-outlined">inventory_2</span> Manage Resources
                 </li>
                 <li class="nav-item" data-target="maintenance-view">
-                    <span class="icon">🛠️</span> Maintenance
+                    <span class="material-symbols-outlined">build</span> Maintenance
                 </li>
                 <li class="nav-item" data-target="returns-view">
-                    <span class="icon">↩️</span> Returns
+                    <span class="material-symbols-outlined">assignment_return</span> Returns
                 </li>
                 <li class="nav-item" data-target="proc-tasks-view">
-                    <span class="icon">📋</span> Procurement Tasks
+                    <span class="material-symbols-outlined">assignment</span> Procurement Tasks
                 </li>
             </ul>
-
-            <div class="user-profile-widget">
-                <div class="user-avatar">
-                    <img src="https://i.pravatar.cc/150?img=13" alt="User">
-                </div>
-                <div class="user-info">
-                    <span class="user-name">Mike Torres</span>
-                    <span class="user-role">Operations Staff</span>
-                </div>
-            </div>
-        </aside>
+        </app-sidebar>
 
         <!-- Main Wrapper -->
         <div class="main-wrapper">
-            <header class="top-header">
-                <div class="search-bar">
-                    <span style="color:#94a3b8">🔍</span>
-                    <input type="text" placeholder="Search operations...">
-                </div>
-                <div class="header-actions">
-                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="staffApp.logout()">Logout</button>
-                    <button class="icon-btn">🔔</button>
-                    <button class="icon-btn">⚙️</button>
-                </div>
-            </header>
+            <app-header></app-header>
 
             <main class="content-area">
 
@@ -79,35 +62,35 @@
                             <div class="stat-title">Pending Allocations</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" id="dash-staff-alloc">0</div>
-                                <span style="font-size:1.5rem">📋</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#0f38ae">assignment</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title">Total Resources</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" id="dash-staff-res">0</div>
-                                <span style="font-size:1.5rem">📦</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem">inventory_2</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title" style="color:#d97706">Maintenance</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" style="color:#d97706" id="dash-staff-maint">0</div>
-                                <span style="font-size:1.5rem">🛠️</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#d97706">build</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title" style="color:#0284c7">Procurement Tasks</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" style="color:#0284c7" id="dash-staff-proc">0</div>
-                                <span style="font-size:1.5rem">🛒</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#0284c7">shopping_cart</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title" style="color:#8b5cf6">Returns Pending</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" style="color:#8b5cf6" id="dash-staff-returns">0</div>
-                                <span style="font-size:1.5rem">↩️</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#8b5cf6">assignment_return</span>
                             </div>
                         </div>
                     </div>
@@ -229,7 +212,7 @@
                         <div class="data-section-header">
                             <div class="data-section-title">Asset List</div>
                             <div class="search-bar" style="width:250px;">
-                                <span style="color:#94a3b8">🔍</span>
+                                <span class="material-symbols-outlined" style="color:#94a3b8">search</span>
                                 <input type="text" placeholder="Search by Code or Type...">
                             </div>
                         </div>
@@ -276,8 +259,8 @@
                     </div>
 
                     <div class="collapsible-header" onclick="staffApp.toggleHistory('maint-history')">
-                        <div><span style="margin-right:8px">📜</span> Maintenance History <span class="badge pending" id="maint-history-count" style="margin-left:8px">0</span></div>
-                        <span id="maint-history-icon">▼</span>
+                        <div><span class="material-symbols-outlined" style="margin-right:8px; vertical-align:middle; font-size:18px">history</span> Maintenance History <span class="badge pending" id="maint-history-count" style="margin-left:8px">0</span></div>
+                        <span id="maint-history-icon" class="material-symbols-outlined" style="font-size:18px">expand_more</span>
                     </div>
                     <div class="collapsible-content" id="maint-history">
                         <div class="data-section">
@@ -326,8 +309,8 @@
                     </div>
 
                     <div class="collapsible-header" onclick="staffApp.toggleHistory('return-history')">
-                        <div><span style="margin-right:8px">📜</span> Return History <span class="badge pending" id="return-history-count" style="margin-left:8px">0</span></div>
-                        <span id="return-history-icon">▼</span>
+                        <div><span class="material-symbols-outlined" style="margin-right:8px; vertical-align:middle; font-size:18px">history</span> Return History <span class="badge pending" id="return-history-count" style="margin-left:8px">0</span></div>
+                        <span id="return-history-icon" class="material-symbols-outlined" style="font-size:18px">expand_more</span>
                     </div>
                     <div class="collapsible-content" id="return-history">
                         <div class="data-section">
@@ -390,7 +373,9 @@
         </div>
     </div>
 
-    <script src="js/store.js"></script>
-    <script src="js/staff.js"></script>
+    <script src="../js/components/app-header.js"></script>
+    <script src="../js/components/app-sidebar.js"></script>
+    <script src="../js/utils/store.js"></script>
+    <script src="../js/pages/staff.js"></script>
 </body>
 </html>

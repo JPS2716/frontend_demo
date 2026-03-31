@@ -4,52 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ResourceX - System Administration</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components/layout.css">
+    <link rel="stylesheet" href="../css/components/button.css">
+    <link rel="stylesheet" href="../css/components/card.css">
+    <link rel="stylesheet" href="../css/components/table.css">
+    <link rel="stylesheet" href="../css/components/form.css">
+    <link rel="stylesheet" href="../css/components/badge.css">
+    <link rel="stylesheet" href="../css/components/toast.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0">
 </head>
 <body>
 
     <div class="app-container">
-        
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo-container">
-                <div class="logo-icon">R</div>
-                <div class="logo-text">ResourceX</div>
-            </div>
 
+        <!-- Sidebar -->
+        <app-sidebar user-name="System Root" user-role="Administrator" user-initial="A">
             <ul class="nav-menu">
                 <li class="nav-item active" data-target="dashboard-view">
-                    <span class="icon">👥</span> User Management
+                    <span class="material-symbols-outlined">group</span> User Management
                 </li>
                 <li class="nav-item" data-target="dept-manage-view">
-                    <span class="icon">🏢</span> Department Configuration
+                    <span class="material-symbols-outlined">domain</span> Department Configuration
                 </li>
                 <li class="nav-item" data-target="role-manage-view">
-                    <span class="icon">🛡️</span> Roles & Permissions
+                    <span class="material-symbols-outlined">admin_panel_settings</span> Roles &amp; Permissions
                 </li>
             </ul>
-
-            <div class="user-profile-widget">
-                <div class="user-avatar" style="background:#1e293b; color:white; display:flex; align-items:center; justify-content:center;font-weight:bold; font-size:1rem">A</div>
-                <div class="user-info">
-                    <span class="user-name">System Root</span>
-                    <span class="user-role">Administrator</span>
-                </div>
-            </div>
-        </aside>
+        </app-sidebar>
 
         <!-- Main Wrapper -->
         <div class="main-wrapper">
-            <header class="top-header">
-                <div class="search-bar">
-                    <span style="color:#94a3b8">🔍</span>
-                    <input type="text" placeholder="Search accounts...">
-                </div>
-                <div class="header-actions">
-                    <button class="btn-danger" style="background:transparent; color:#b91c1c; border:1px solid #b91c1c; padding:0.4rem 0.8rem; font-size:0.75rem" onclick="adminApp.logout()">Logout</button>
-                    <button class="icon-btn">⚙️</button>
-                </div>
-            </header>
+            <app-header></app-header>
 
             <main class="content-area">
 
@@ -64,28 +50,28 @@
                             <div class="stat-title">Total Users</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" id="dash-admin-users">0</div>
-                                <span style="font-size:1.5rem">👥</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#0f38ae">group</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title">Departments</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" id="dash-admin-depts">0</div>
-                                <span style="font-size:1.5rem">🏢</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#0369a1">domain</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title">Active Roles</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" id="dash-admin-roles">5</div>
-                                <span style="font-size:1.5rem">🛡️</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#7c3aed">admin_panel_settings</span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title" style="color:#16a34a">System Health</div>
                             <div class="stat-value-row">
                                 <div class="stat-value" style="color:#16a34a">100%</div>
-                                <span style="font-size:1.5rem">⚙️</span>
+                                <span class="material-symbols-outlined" style="font-size:1.5rem; color:#16a34a">monitor_heart</span>
                             </div>
                         </div>
                     </div>
@@ -119,11 +105,17 @@
 
                     <div style="background:white; padding:2rem; border-radius:12px; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:1rem;">
                         <div style="display:flex; justify-content:space-between; padding-bottom:1rem; border-bottom:1px solid #e2e8f0;">
-                            <div><strong style="font-size:1.1rem; color:var(--primary-color)">IT Services</strong><div style="color:#64748b; font-size:0.875rem">Head: Sarah Jenkins</div></div>
+                            <div>
+                                <strong style="font-size:1.1rem; color:var(--primary-color)">IT Services</strong>
+                                <div style="color:#64748b; font-size:0.875rem">Head: Sarah Jenkins</div>
+                            </div>
                             <button class="btn-danger" style="font-size:0.75rem">Delete</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; padding-bottom:1rem; border-bottom:1px solid #e2e8f0;">
-                            <div><strong style="font-size:1.1rem; color:var(--primary-color)">Logistics Ops</strong><div style="color:#64748b; font-size:0.875rem">Head: Marcus V.</div></div>
+                            <div>
+                                <strong style="font-size:1.1rem; color:var(--primary-color)">Logistics Ops</strong>
+                                <div style="color:#64748b; font-size:0.875rem">Head: Marcus V.</div>
+                            </div>
                             <button class="btn-danger" style="font-size:0.75rem">Delete</button>
                         </div>
                         <div style="margin-top:1rem;">
@@ -136,7 +128,7 @@
                 <div id="role-manage-view" class="view-section">
                     <h1 class="page-title">Global Role Matrix</h1>
                     <p class="page-subtitle">Configure which roles have access to certain system features.</p>
-                    
+
                     <div class="data-section">
                         <table class="table matrix-table" id="permissions-matrix-table">
                             <thead>
@@ -153,7 +145,7 @@
                                 <!-- Populated by JS -->
                             </tbody>
                         </table>
-                        
+
                         <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:2rem;">
                             <button class="btn-secondary" onclick="adminApp.resetPermissions()">Reset to Defaults</button>
                             <button class="btn-primary" onclick="adminApp.savePermissions()">Save Changes</button>
@@ -177,7 +169,9 @@
         </div>
     </div>
 
-    <script src="js/store.js"></script>
-    <script src="js/admin.js"></script>
+    <script src="../js/components/app-header.js"></script>
+    <script src="../js/components/app-sidebar.js"></script>
+    <script src="../js/utils/store.js"></script>
+    <script src="../js/pages/admin.js"></script>
 </body>
 </html>
