@@ -30,6 +30,9 @@
                 <li class="nav-item" data-target="my-resources-view">
                     <span class="icon">📦</span> My Resources
                 </li>
+                <li class="nav-item" data-target="procurement-view">
+                    <span class="icon">🛒</span> Procurement Request
+                </li>
             </ul>
 
             <div class="user-profile-widget">
@@ -167,19 +170,7 @@
                                 <label class="form-label">Resource Type</label>
                                 <select class="form-control" id="req-type" required>
                                     <option value="" disabled selected>Select Resource Type</option>
-                                    <!-- Options populated by JS -->
                                 </select>
-                                <div style="margin-top:0.5rem;">
-                                    <a href="#" style="font-size:0.875rem; font-weight:600;" onclick="app.toggleNewResourceForm(event)">+ Request New Resource</a>
-                                </div>
-                            </div>
-
-                            <!-- Hidden New Resource Form -->
-                            <div id="new-resource-fields" style="display:none; padding:1rem; background:#f8fafc; border-radius:8px; margin-bottom:1.5rem;">
-                                <div class="form-group">
-                                    <label class="form-label">New Resource Name</label>
-                                    <input type="text" class="form-control" id="req-new-name">
-                                </div>
                             </div>
 
                             <div class="form-group">
@@ -284,7 +275,7 @@
                                         <th>Department</th>
                                         <th>Allocated Date</th>
                                         <th>Status</th>
-                                        <th style="text-align:right">Actions</th>
+                                        <th style="text-align:right; min-width:210px">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="resources-tbody">
@@ -294,10 +285,66 @@
                         </div>
                     </div>
                 </div>
+            <!-- 5. Procurement Request View -->
+            <div id="procurement-view" class="view-section" style="padding: 2rem;">
+                <h1 class="page-title">Procurement Request</h1>
+                <p class="page-subtitle">Submit a request to procure new resources not currently available in the inventory.</p>
+                
+                <div class="form-card">
+                    <form id="procurementForm" onsubmit="app.submitProcurement(event)">
+                        <div class="form-group">
+                            <label class="form-label">Requesting Department</label>
+                            <select class="form-control" id="proc-dept" required>
+                                <option value="" disabled selected>Select Department</option>
+                                <option value="IT Services">IT Services</option>
+                                <option value="Logistics Ops">Logistics Ops</option>
+                                <option value="HR Dept">HR Dept</option>
+                                <option value="Operations">Operations</option>
+                                <option value="Facilities">Facilities</option>
+                                <option value="Administration">Administration</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Resource Type / Name</label>
+                            <input type="text" class="form-control" id="proc-type" placeholder="e.g. Ergonomic Office Chairs" required>
+                        </div>
 
+                        <div class="form-group">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="proc-qty" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Business Justification</label>
+                            <textarea class="form-control" id="proc-reason" rows="4" placeholder="Explain why this procurement is needed based on business requirements..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit Procurement Request</button>
+                    </form>
+                </div>
+
+                <!-- Procurement History Table -->
+                <div class="data-section" style="margin-top:2rem;">
+                    <div class="data-section-header">
+                        <div class="data-section-title">My Procurement History</div>
+                        <button class="btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem" onclick="app.renderProcurements()">Refresh</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Item Name</th>
+                                <th>Qty</th>
+                                <th>Date Submitted</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="procurements-tbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             </main>
         </div>
-    </div>
 
     <script src="js/store.js"></script>
     <script src="js/requestor.js"></script>

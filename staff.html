@@ -31,7 +31,10 @@
                     <span class="icon">📦</span> Manage Resources
                 </li>
                 <li class="nav-item" data-target="maintenance-view">
-                    <span class="icon">🛠️</span> Maintenance & Turns
+                    <span class="icon">🛠️</span> Maintenance
+                </li>
+                <li class="nav-item" data-target="returns-view">
+                    <span class="icon">↩️</span> Returns
                 </li>
                 <li class="nav-item" data-target="proc-tasks-view">
                     <span class="icon">📋</span> Procurement Tasks
@@ -247,32 +250,100 @@
                     </div>
                 </div>
 
-                <!-- 4. Maintenance & Returns -->
+                <!-- 4. Maintenance Management -->
                 <div id="maintenance-view" class="view-section">
-                    <h1 class="page-title">Maintenance & Returns</h1>
-                    <p class="page-subtitle">Process repair tickets and inspect returned assets.</p>
+                    <h1 class="page-title">Maintenance Management</h1>
+                    <p class="page-subtitle">Track and resolve active repair tickets.</p>
 
-                    <div style="display:flex; gap:2rem;">
-                        <!-- Maintenance Queue -->
-                        <div class="data-section" style="flex:1">
-                            <div class="data-section-header">
-                                <div class="data-section-title">Repair Queue</div>
-                            </div>
+                    <div class="data-section">
+                        <div class="data-section-header">
+                            <div class="data-section-title">Active Repair Queue</div>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Type</th>
+                                    <th>Allocated To</th>
+                                    <th>Issue/Status</th>
+                                    <th style="text-align:right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="maint-tbody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="collapsible-header" onclick="staffApp.toggleHistory('maint-history')">
+                        <div><span style="margin-right:8px">📜</span> Maintenance History <span class="badge pending" id="maint-history-count" style="margin-left:8px">0</span></div>
+                        <span id="maint-history-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content" id="maint-history">
+                        <div class="data-section">
                             <table class="table">
-                                <tbody id="maint-tbody">
-                                    <!-- Populated by JS -->
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Type</th>
+                                        <th>Allocated To</th>
+                                        <th>Issue</th>
+                                        <th>Action Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="maint-history-tbody">
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Return Queue -->
-                        <div class="data-section" style="flex:1">
-                            <div class="data-section-header">
-                                <div class="data-section-title">Returned Returns Inspection</div>
-                            </div>
+                <!-- 5. Return Management -->
+                <div id="returns-view" class="view-section">
+                    <h1 class="page-title">Return Management</h1>
+                    <p class="page-subtitle">Inspect returned assets and update inventory availability.</p>
+
+                    <div class="data-section">
+                        <div class="data-section-header">
+                            <div class="data-section-title">Pending Returns</div>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Type</th>
+                                    <th>Returned By</th>
+                                    <th>Return Date</th>
+                                    <th>Condition Inspection</th>
+                                    <th style="text-align:right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="return-tbody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="collapsible-header" onclick="staffApp.toggleHistory('return-history')">
+                        <div><span style="margin-right:8px">📜</span> Return History <span class="badge pending" id="return-history-count" style="margin-left:8px">0</span></div>
+                        <span id="return-history-icon">▼</span>
+                    </div>
+                    <div class="collapsible-content" id="return-history">
+                        <div class="data-section">
                             <table class="table">
-                                <tbody id="return-tbody">
-                                    <!-- Populated by JS -->
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Type</th>
+                                        <th>Returned By</th>
+                                        <th>Return Date</th>
+                                        <th>Processed Date</th>
+                                        <th>Condition</th>
+                                        <th>Final Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="return-history-tbody">
                                 </tbody>
                             </table>
                         </div>

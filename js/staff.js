@@ -15,6 +15,7 @@ const staffApp = {
         this.renderAllocations();
         this.renderInventory();
         this.renderMaintenance();
+        this.renderReturns();
         this.renderProcurementTasks();
     },
 
@@ -222,64 +223,205 @@ const staffApp = {
         }
     },
 
-    // 4. Maintenance / Returns
+    // 4. Maintenance Management
     renderMaintenance: function() {
         const mtbody = document.getElementById('maint-tbody');
-        const rtbody = document.getElementById('return-tbody');
-        if(!mtbody || !rtbody) return;
-        
+        if(!mtbody) return;
         mtbody.innerHTML = '';
-        rtbody.innerHTML = '';
 
-        const resources = Store.getData().resources;
+        const db = Store.getData();
+        const resources = db.resources;
         
-        // Maintenance Queue
+        // Active Queue
         resources.filter(r => r.status === 'Maintenance Requested' || r.status === 'Maintenance').forEach(res => {
             const tr = document.createElement('tr');
+            let actionHtml = '';
+            let statusText = res.status;
+
+            if (res.status === 'Maintenance Requested') {
+                actionHtml = `
+                    <button class="btn-primary" style="font-size:0.75rem; margin-right:4px;" onclick="staffApp.acceptMaintenance('${res.id}')">Accept</button>
+                    <button class="btn-danger" style="font-size:0.75rem" onclick="staffApp.markScrapMaint('${res.id}')">Reject &rarr; Scrap</button>
+                `;
+            } else if (res.status === 'Maintenance') {
+                statusText = 'Under Maintenance';
+                actionHtml = `
+                    <button class="btn-primary" style="font-size:0.75rem; background:#16a34a; margin-right:4px;" onclick="staffApp.markRepaired('${res.id}')">Mark Repaired</button>
+                    <button class="btn-danger" style="font-size:0.75rem" onclick="staffApp.markScrapMaint('${res.id}')">Mark Scrap</button>
+                `;
+            }
+
             tr.innerHTML = `
-                <td><div class="td-id">${res.id}</div><div style="font-size:0.75rem">${res.type}</div></td>
-                <td>${res.department}</td>
-                <td style="text-align:right">
-                    <button class="btn-primary" style="font-size:0.75rem" onclick="staffApp.completeMaintenance('${res.id}')">Mark Fixed</button>
-                </td>
+                <td><div class="td-id">${res.id}</div></td>
+                <td>${res.type}</td>
+                <td>${res.assignedTo || 'None'}</td>
+                <td><span class="badge pending">${statusText}</span></td>
+                <td style="text-align:right">${actionHtml}</td>
             `;
             mtbody.appendChild(tr);
         });
 
-        // Returns Queue
+        // History
+        const htbody = document.getElementById('maint-history-tbody');
+        const hcount = document.getElementById('maint-history-count');
+        if (htbody) {
+            htbody.innerHTML = '';
+            const history = db.maintenanceHistory || [];
+            if (hcount) hcount.textContent = history.length;
+            
+            history.forEach(log => {
+                const sbadge = log.status === 'Repaired' ? `<span class="badge allocated">${log.status}</span>` : `<span class="badge rejected">${log.status}</span>`;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><div class="td-id">${log.code}</div></td>
+                    <td>${log.type}</td>
+                    <td>${log.allocatedTo}</td>
+                    <td>${log.issue || 'Routine'}</td>
+                    <td>${log.actionDate}</td>
+                    <td>${sbadge}</td>
+                `;
+                htbody.appendChild(tr);
+            });
+        }
+    },
+
+    acceptMaintenance: function(id) {
+        Store.updateItem('resources', id, { status: 'Maintenance' });
+        Store.showToast("Maintenance accepted. Resource is now under maintenance.", "success");
+        this.renderMaintenance();
+        this.renderDashboard();
+    },
+
+    markRepaired: function(id) {
+        const res = Store.getData().resources.find(r => r.id === id);
+        Store.updateItem('resources', id, { status: 'Available', condition: 'Good' });
+        const db = Store.getData();
+        if(!db.maintenanceHistory) db.maintenanceHistory = [];
+        db.maintenanceHistory.unshift({
+            code: res.id, type: res.type, allocatedTo: res.assignedTo, issue: "Repaired", actionDate: new Date().toLocaleDateString(), status: "Repaired"
+        });
+        Store.saveData(db);
+        Store.showToast("Resource marked as repaired. User notified.", "success");
+        this.renderMaintenance();
+        this.renderDashboard();
+    },
+
+    markScrapMaint: function(id) {
+        const res = Store.getData().resources.find(r => r.id === id);
+        Store.updateItem('resources', id, { status: 'Scrapped' });
+        const db = Store.getData();
+        if(!db.maintenanceHistory) db.maintenanceHistory = [];
+        db.maintenanceHistory.unshift({
+            code: res.id, type: res.type, allocatedTo: res.assignedTo, issue: "Unrepairable", actionDate: new Date().toLocaleDateString(), status: "Scrap"
+        });
+        Store.saveData(db);
+        Store.showToast("Resource marked as scrap. User notified.", "error");
+        this.renderMaintenance();
+        this.renderDashboard();
+    },
+
+    // 5. Return Management
+    renderReturns: function() {
+        const rtbody = document.getElementById('return-tbody');
+        if(!rtbody) return;
+        rtbody.innerHTML = '';
+
+        const db = Store.getData();
+        const resources = db.resources;
+        
+        // Return Queue
         resources.filter(r => r.status === 'Returned').forEach(res => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><div class="td-id">${res.id}</div><div style="font-size:0.75rem">${res.type}</div></td>
+                <td><div class="td-id">${res.id}</div></td>
+                <td>${res.type}</td>
+                <td>${res.assignedTo || 'Unknown'}</td>
+                <td>${res.date || new Date().toLocaleDateString()}</td>
                 <td>
-                    <select class="form-control" style="font-size:0.75rem; padding:0.25rem" id="return-cond-${res.id}">
-                        <option value="Good">Condition: Good</option>
-                        <option value="Fair">Condition: Fair</option>
-                        <option value="Damaged">Condition: Damaged</option>
+                    <select class="form-control" style="font-size:0.75rem; padding:0.25rem" id="return-cond-${res.id}" onchange="staffApp.validateReturnCond('${res.id}')">
+                        <option value="">-- Inspect Condition --</option>
+                        <option value="Good">Good &rarr; Available</option>
+                        <option value="Average">Average &rarr; Available</option>
+                        <option value="Bad">Bad &rarr; Scrap</option>
                     </select>
                 </td>
                 <td style="text-align:right">
-                    <button class="btn-primary" style="font-size:0.75rem" onclick="staffApp.processReturn('${res.id}')">Process</button>
+                    <button class="btn-primary" style="font-size:0.75rem" id="process-ret-${res.id}" disabled onclick="staffApp.processReturn('${res.id}')">Process Return</button>
                 </td>
             `;
             rtbody.appendChild(tr);
         });
+
+        // History
+        const htbody = document.getElementById('return-history-tbody');
+        const hcount = document.getElementById('return-history-count');
+        if (htbody) {
+            htbody.innerHTML = '';
+            const history = db.returnHistory || [];
+            if (hcount) hcount.textContent = history.length;
+
+            history.forEach(log => {
+                const sbadge = log.finalStatus === 'Available' ? `<span class="badge allocated">${log.finalStatus}</span>` : `<span class="badge rejected">${log.finalStatus}</span>`;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><div class="td-id">${log.code}</div></td>
+                    <td>${log.type}</td>
+                    <td>${log.returnedBy}</td>
+                    <td>${log.returnDate}</td>
+                    <td>${log.processDate}</td>
+                    <td>${log.condition}</td>
+                    <td>${sbadge}</td>
+                `;
+                htbody.appendChild(tr);
+            });
+        }
     },
 
-    completeMaintenance: function(resId) {
-        Store.updateItem('resources', resId, { status: "Repaired", condition: "Good" });
-        alert("Maintenance marked complete.");
-        this.renderMaintenance();
-        this.renderInventory();
+    validateReturnCond: function(id) {
+        const val = document.getElementById(`return-cond-${id}`).value;
+        const btn = document.getElementById(`process-ret-${id}`);
+        if(btn) btn.disabled = val === "";
     },
 
-    processReturn: function(resId) {
-        const cond = document.getElementById(`return-cond-${resId}`).value;
-        const newStatus = cond === "Damaged" ? "Maintenance" : "Available";
-        Store.updateItem('resources', resId, { status: newStatus, condition: cond, assignedTo: "None" });
-        alert(`Return processed. Added to ${newStatus}.`);
-        this.renderMaintenance();
-        this.renderInventory();
+    processReturn: function(id) {
+        const cond = document.getElementById(`return-cond-${id}`).value;
+        const newStatus = cond === "Bad" ? "Scrapped" : "Available";
+        
+        const res = Store.getData().resources.find(r => r.id === id);
+        Store.updateItem('resources', id, { status: newStatus, condition: cond, assignedTo: "None" });
+        
+        const db = Store.getData();
+        if(!db.returnHistory) db.returnHistory = [];
+        db.returnHistory.unshift({
+            code: res.id, type: res.type, returnedBy: res.assignedTo || 'Unknown',
+            returnDate: res.date || new Date().toLocaleDateString(),
+            processDate: new Date().toLocaleDateString(),
+            condition: cond, finalStatus: newStatus
+        });
+        Store.saveData(db);
+
+        if(newStatus === 'Available') {
+            Store.showToast("Return processed. Resource marked as Available.", "success");
+        } else {
+            Store.showToast("Return processed. Resource marked as Scrap.", "error");
+        }
+        
+        this.renderReturns();
+        this.renderDashboard();
+    },
+
+    toggleHistory: function(contentId) {
+        const content = document.getElementById(contentId);
+        const icon = document.getElementById(contentId + '-icon');
+        if(content) {
+            if(content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                if(icon) icon.textContent = '▼';
+            } else {
+                content.classList.add('expanded');
+                if(icon) icon.textContent = '▲';
+            }
+        }
     },
 
     // 5. Procurement Tasks

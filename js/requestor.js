@@ -14,6 +14,7 @@ const app = {
         this.renderDashboard();
         this.renderRequests();
         this.renderResources();
+        this.renderProcurements();
     },
 
     bindNav: function() {
@@ -64,21 +65,10 @@ const app = {
         });
     },
 
-    toggleNewResourceForm: function(e) {
-        e.preventDefault();
-        const newFields = document.getElementById('new-resource-fields');
-        newFields.style.display = newFields.style.display === 'none' ? 'block' : 'none';
-        document.getElementById('req-type').required = newFields.style.display !== 'block';
-    },
-
     submitRequest: function(e) {
         e.preventDefault();
         const dept = document.getElementById('req-dept').value;
-        let type = document.getElementById('req-type').value;
-        
-        if (document.getElementById('new-resource-fields').style.display === 'block') {
-            type = document.getElementById('req-new-name').value;
-        }
+        const type = document.getElementById('req-type').value;
 
         const qty = parseInt(document.getElementById('req-qty').value);
         const reason = document.getElementById('req-reason').value;
@@ -99,7 +89,7 @@ const app = {
             justification: reason
         });
 
-        alert("Request Submitted Successfully! ID: " + newId);
+        Store.showToast("Request Submitted Successfully! ID: " + newId, "success");
         document.getElementById('requestForm').reset();
         
         this.renderDashboard();
@@ -108,6 +98,35 @@ const app = {
         
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.querySelector('.nav-item[data-target="my-requests-view"]').classList.add('active');
+    },
+
+    submitProcurement: function(e) {
+        e.preventDefault();
+        const dept = document.getElementById('proc-dept').value;
+        const type = document.getElementById('proc-type').value;
+        const qty = parseInt(document.getElementById('proc-qty').value);
+        const reason = document.getElementById('proc-reason').value;
+        const user = Store.getCurrentUser();
+
+        const newId = `PRC-${Math.floor(1000 + Math.random() * 9000)}`;
+        const dateStr = new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric', year:'numeric'});
+
+        Store.addItem('procurements', {
+            id: newId,
+            item: type,
+            department: dept,
+            requester: user.name,
+            quantity: qty,
+            status: "Pending Approval",
+            priority: "Normal",
+            date: dateStr,
+            justification: reason
+        });
+
+        Store.showToast("Procurement Request Submitted Successfully! ID: " + newId, "success");
+        document.getElementById('procurementForm').reset();
+        
+        this.renderProcurements();
     },
 
     renderDashboard: function() {
@@ -219,6 +238,32 @@ const app = {
         });
     },
 
+    renderProcurements: function() {
+        const tbody = document.getElementById('procurements-tbody');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+
+        const user = Store.getCurrentUser();
+        const myProcs = Store.getData().procurements.filter(p => p.requester === user.name);
+
+        myProcs.forEach(proc => {
+            let statusBadge = `<span class="badge" style="background:#cbd5e1; color:#0f172a">${proc.status}</span>`;
+            if (proc.status === 'Approved' || proc.status === 'Completed') statusBadge = `<span class="badge" style="background:#dcfce7; color:#166534">${proc.status}</span>`;
+            else if (proc.status === 'Pending Approval') statusBadge = `<span class="badge pending">${proc.status}</span>`;
+            else if (proc.status === 'Rejected') statusBadge = `<span class="badge" style="background:#fee2e2; color:#b91c1c">${proc.status}</span>`;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="td-id">${proc.id}</td>
+                <td>${proc.item}</td>
+                <td>${String(proc.quantity).padStart(2, '0')}</td>
+                <td>${proc.date}</td>
+                <td>${statusBadge}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    },
+
     confirmReceipt: function(reqId) {
         const user = Store.getCurrentUser();
         const req = Store.getData().requests.find(r => r.id === reqId);
@@ -266,8 +311,10 @@ const app = {
             if(res.status === 'Allocated') {
                 statusBadge = `<span class="badge allocated">${res.status}</span>`;
                 actions = `
-                    <button class="btn-secondary" style="font-size:0.75rem" onclick="app.requestMaintenance('${res.id}')">🛠️ Maintenance</button>
-                    <button class="btn-danger" style="font-size:0.75rem; margin-left:0.5rem" onclick="app.returnResource('${res.id}')">⮌ Return</button>
+                    <div style="display:flex; flex-direction:row; gap:0.5rem; justify-content:flex-end">
+                        <button class="btn-secondary" style="font-size:0.82rem; padding:0.3rem 0.8rem; white-space:nowrap" onclick="app.requestMaintenance('${res.id}')">🛠 Maintenance</button>
+                        <button class="btn-danger" style="font-size:0.82rem; padding:0.3rem 0.8rem; white-space:nowrap" onclick="app.returnResource('${res.id}')">⮌ Return</button>
+                    </div>
                 `;
             } else if (res.status === 'Maintenance Requested' || res.status === 'Maintenance') {
                 statusBadge = `<span class="badge maintenance">${res.status}</span>`;

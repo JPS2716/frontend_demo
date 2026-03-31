@@ -13,6 +13,7 @@ const adminApp = {
         this.bindNav();
         this.renderUsers();
         this.renderDepartments();
+        this.renderRolesMatrix();
     },
 
     bindNav: function() {
@@ -80,20 +81,53 @@ const adminApp = {
         });
     },
 
+    openModal: function(title, html, onConfirm) {
+        document.getElementById('modal-header').textContent = title;
+        document.getElementById('modal-body').innerHTML = html;
+        document.getElementById('admin-modal').style.display = 'flex';
+        
+        const btn = document.getElementById('modal-confirm-btn');
+        btn.onclick = () => {
+            if (onConfirm) onConfirm();
+        };
+    },
+
+    closeModal: function() {
+        document.getElementById('admin-modal').style.display = 'none';
+    },
+
     editUser: function(id) {
-        const newRole = prompt("Enter new role (Requestor, Dept Head, Registrar, Staff, System Admin):");
-        if (newRole && ['Requestor', 'Dept Head', 'Registrar', 'Staff', 'System Admin'].includes(newRole)) {
+        const user = Store.getData().users.find(u => u.id === id);
+        if(!user) return;
+        const html = `
+            <div style="margin-bottom:1rem">
+                <label style="display:block; margin-bottom:0.5rem; font-weight:500">New Role for ${user.name}</label>
+                <select id="modal-role-select" class="form-control" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px">
+                    <option value="Requestor" ${user.role === 'Requestor' ? 'selected' : ''}>Requestor</option>
+                    <option value="Dept Head" ${user.role === 'Dept Head' ? 'selected' : ''}>Dept Head</option>
+                    <option value="Registrar" ${user.role === 'Registrar' ? 'selected' : ''}>Registrar</option>
+                    <option value="Staff" ${user.role === 'Staff' ? 'selected' : ''}>Staff</option>
+                    <option value="System Admin" ${user.role === 'System Admin' ? 'selected' : ''}>System Admin</option>
+                </select>
+            </div>
+        `;
+        this.openModal("Edit User Access", html, () => {
+            const newRole = document.getElementById('modal-role-select').value;
             Store.updateItem('users', id, { role: newRole });
             this.renderUsers();
-            alert("Role updated temporarily.");
-        }
+            Store.showToast("Role updated permanently.", "success");
+            this.closeModal();
+        });
     },
 
     deleteUser: function(id) {
-        if(confirm("Are you sure you want to deactivate this user?")) {
+        const html = `<p style="color:#64748b; margin:0">Are you absolutely sure you want to deactivate this user? They will lose access immediately.</p>`;
+        this.openModal("Deactivate User", html, () => {
             Store.updateItem('users', id, { status: "Inactive" });
             this.renderUsers();
-        }
+            Store.showToast("User deactivated.", "success");
+            this.closeModal();
+        });
     },
 
     // 2. Department Config
@@ -123,23 +157,107 @@ const adminApp = {
     },
 
     addDept: function() {
-        const name = prompt("Department Name:");
-        const head = prompt("Head Name:");
-        if (name && head) {
-            Store.addItem('departments', {
-                id: `D${Math.floor(100 + Math.random() * 900)}`,
-                name: name,
-                head: head,
-                memberCount: 0
-            });
-            this.renderDepartments();
-        }
+        const html = `
+            <div style="margin-bottom:1rem">
+                <label style="display:block; margin-bottom:0.5rem; font-weight:500">Department Name</label>
+                <input type="text" id="modal-dept-name" class="form-control" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px" placeholder="e.g. IT Services">
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:0.5rem; font-weight:500">Head Name</label>
+                <input type="text" id="modal-dept-head" class="form-control" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px" placeholder="e.g. Sarah Jenkins">
+            </div>
+        `;
+        this.openModal("Add New Department", html, () => {
+            const name = document.getElementById('modal-dept-name').value;
+            const head = document.getElementById('modal-dept-head').value;
+            if (name && head) {
+                Store.addItem('departments', {
+                    id: `D${Math.floor(100 + Math.random() * 900)}`,
+                    name: name,
+                    head: head,
+                    memberCount: 0
+                });
+                this.renderDepartments();
+                Store.showToast("Department added successfully.", "success");
+                this.closeModal();
+            } else {
+                Store.showToast("Please fill all fields.", "error");
+            }
+        });
     },
     
     deleteDept: function(id) {
-        if(confirm("Delete this department? Warning: affects users and resources.")) {
+        const html = `<p style="color:#b91c1c; margin:0">Warning: Deleting this department affects all linked associated users and active resources. Proceed at your own risk.</p>`;
+        this.openModal("Delete Department", html, () => {
             Store.deleteItem('departments', id);
             this.renderDepartments();
+            Store.showToast("Department securely removed.", "warning");
+            this.closeModal();
+        });
+    },
+
+    // 3. Roles and Perms Matrix
+    renderRolesMatrix: function() {
+        const tbody = document.getElementById('matrix-tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        const db = Store.getData();
+        const matrix = db.permissionsMatrix;
+        if (!matrix) return; // safety
+        
+        const roles = ['Requestor', 'Dept Head', 'Registrar', 'Staff', 'System Admin'];
+
+        // Populate table
+        Object.keys(matrix).forEach(perm => {
+            const tr = document.createElement('tr');
+            let colsHtml = `<td style="font-weight:600">${perm}</td>`;
+            
+            roles.forEach(role => {
+                const isChecked = matrix[perm].includes(role) ? 'checked' : '';
+                const isDisabled = role === 'System Admin' ? 'disabled' : '';
+                colsHtml += `
+                    <td>
+                        <input type="checkbox" class="checkbox-custom perm-checkbox" 
+                            data-perm="${perm}" data-role="${role}" 
+                            ${isChecked} ${isDisabled}>
+                    </td>
+                `;
+            });
+            
+            tr.innerHTML = colsHtml;
+            tbody.appendChild(tr);
+        });
+    },
+
+    savePermissions: function() {
+        const checkboxes = document.querySelectorAll('.perm-checkbox');
+        const db = Store.getData();
+        const newMatrix = {};
+
+        Object.keys(db.permissionsMatrix).forEach(k => newMatrix[k] = []);
+
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                const perm = cb.getAttribute('data-perm');
+                const role = cb.getAttribute('data-role');
+                if (!newMatrix[perm]) newMatrix[perm] = [];
+                newMatrix[perm].push(role);
+            }
+        });
+
+        db.permissionsMatrix = newMatrix;
+        Store.saveData(db);
+        Store.showToast("Permissions updated", "success");
+    },
+
+    resetPermissions: function() {
+        const db = Store.getData();
+        if (typeof initialData !== 'undefined') {
+            db.permissionsMatrix = JSON.parse(JSON.stringify(initialData.permissionsMatrix));
+            Store.saveData(db);
+            this.renderRolesMatrix();
+            Store.showToast("Matrix reset to defaults", "warning");
         }
     },
 

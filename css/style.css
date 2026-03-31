@@ -479,3 +479,105 @@ tbody tr:last-child td {
   color: #94a3b8;
   font-size: 0.875rem;
 }
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background: white;
+  border-left: 4px solid var(--primary-color);
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+  animation: slideInRight 0.3s ease forwards, fadeOut 0.3s ease 2.7s forwards;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast.success { border-left-color: #16a34a; }
+.toast.error { border-left-color: #dc2626; }
+.toast.warning { border-left-color: #d97706; }
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; display: none; }
+}
+
+/* Permissions Matrix UI */
+.matrix-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+.matrix-table th, .matrix-table td {
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
+  text-align: center;
+}
+.matrix-table tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+.matrix-table th:first-child, .matrix-table td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: white;
+  z-index: 10;
+  text-align: left;
+  font-weight: 600;
+  box-shadow: 2px 0 5px -2px rgba(0,0,0,0.05);
+}
+.matrix-table tbody tr:nth-child(even) td:first-child {
+  background-color: #f8fafc;
+}
+
+.checkbox-custom {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+.checkbox-custom:disabled {
+  accent-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Collapsible Content */
+.collapsible-header {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+.collapsible-header:hover {
+  background-color: #e2e8f0;
+}
+.collapsible-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.collapsible-content.expanded {
+  display: block;
+}

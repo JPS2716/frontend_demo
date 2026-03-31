@@ -189,6 +189,30 @@
                             </table>
                         </div>
                     </div>
+                    
+                    <!-- New Incoming Procurement Requests Block -->
+                    <div class="data-section" style="margin-top:2rem;">
+                        <div class="data-section-header">
+                            <div class="data-section-title">Incoming Procurement Requests</div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Proc ID</th>
+                                        <th>Requestor</th>
+                                        <th>Resource/Item</th>
+                                        <th>Qty</th>
+                                        <th>Justification</th>
+                                        <th style="text-align:right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="incoming-procurements-tbody">
+                                    <!-- Rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 2. Dept Resources View -->
@@ -208,12 +232,10 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th>Resource Code</th>
                                         <th>Resource Type</th>
-                                        <th>Total Qty</th>
-                                        <th>Allocated</th>
-                                        <th>Under Maintenance</th>
-                                        <th>Available</th>
-                                        <th>Threshold</th>
+                                        <th>Assigned To</th>
+                                        <th>Condition</th>
                                         <th style="text-align:right">Status</th>
                                     </tr>
                                 </thead>

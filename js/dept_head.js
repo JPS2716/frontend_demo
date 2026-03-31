@@ -64,6 +64,28 @@ const deptApp = {
             `;
             tbody.appendChild(tr);
         });
+
+        // Load pending procurements for this department
+        const procTbody = document.getElementById('incoming-procurements-tbody');
+        if(!procTbody) return;
+        procTbody.innerHTML = '';
+
+        const procs = Store.getData().procurements.filter(p => p.department === user.department && p.status === 'Pending Approval');
+        procs.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="td-id">${p.id}</td>
+                <td>${p.requester || p.requestedBy || 'Unknown'}</td>
+                <td>${p.item || p.resourceType}</td>
+                <td>${String(p.quantity).padStart(2, '0')}</td>
+                <td style="font-size:0.75rem; color:#64748b">${p.justification}</td>
+                <td style="text-align:right">
+                    <button class="btn-primary" style="font-size:0.75rem; background:#16a34a" onclick="deptApp.approveProcurement('${p.id}')">Approve</button>
+                    <button class="btn-danger" style="font-size:0.75rem" onclick="deptApp.rejectProcurement('${p.id}')">Reject</button>
+                </td>
+            `;
+            procTbody.appendChild(tr);
+        });
     },
 
     approveRequest: function(reqId) {
@@ -79,6 +101,22 @@ const deptApp = {
         }
     },
 
+    approveProcurement: function(procId) {
+        Store.updateItem('procurements', procId, { status: "Approved" });
+        Store.showToast("Procurement approved! Sent to Registrar.", "success");
+        this.renderIncomingRequests();
+        this.renderProcurements();
+    },
+
+    rejectProcurement: function(procId) {
+        if(confirm("Are you sure you want to reject this procurement request?")) {
+            Store.updateItem('procurements', procId, { status: "Rejected" });
+            Store.showToast("Procurement request rejected.", "error");
+            this.renderIncomingRequests();
+            this.renderProcurements();
+        }
+    },
+
     // 2. Dept Resources
     renderDeptResources: function() {
         const tbody = document.getElementById('dept-resources-tbody');
@@ -88,36 +126,21 @@ const deptApp = {
         const user = Store.getCurrentUser();
         const resources = Store.getData().resources.filter(r => r.department === user.department);
         
-        // Group by type to show inventory
-        const counts = {};
-        resources.forEach(r => {
-            if(!counts[r.type]) {
-                counts[r.type] = { total: 0, allocated: 0, maintenance: 0, available: 0 };
-            }
-            counts[r.type].total++;
-            if(r.status === 'Allocated') counts[r.type].allocated++;
-            else if(r.status === 'Available') counts[r.type].available++;
-            else counts[r.type].maintenance++;
-        });
-
-        Object.keys(counts).forEach(type => {
-            const c = counts[type];
-            const threshold = Math.max(2, Math.floor(c.total * 0.2));
-            let status = `<span class="badge allocated">Healthy</span>`;
+        resources.forEach(res => {
+            let statusBadge = `<span class="badge ${res.status.toLowerCase()}">${res.status}</span>`;
+            if (res.status === 'Allocated') statusBadge = `<span class="badge allocated">${res.status}</span>`;
+            else if (res.status === 'Maintenance Requested' || res.status === 'Maintenance') statusBadge = `<span class="badge maintenance">${res.status}</span>`;
             
-            if(c.available <= threshold) {
-                status = `<span class="badge" style="background:#fee2e2; color:#b91c1c; border:1px solid #fecaca">Low Stock</span>`;
-            }
+            const condition = res.condition || 'Good';
+            const assigned = res.assignedTo || '--';
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="font-weight:600">${type}</td>
-                <td>${c.total}</td>
-                <td>${c.allocated}</td>
-                <td>${c.maintenance}</td>
-                <td style="font-weight:bold; color:${c.available <= threshold ? '#b91c1c' : '#0f172a'}">${c.available}</td>
-                <td style="color:#94a3b8">${threshold}</td>
-                <td style="text-align:right">${status}</td>
+                <td class="td-id" style="font-weight:600">${res.id}</td>
+                <td>${res.type}</td>
+                <td>${assigned}</td>
+                <td>${condition}</td>
+                <td style="text-align:right">${statusBadge}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -250,16 +273,18 @@ const deptApp = {
 
         Store.addItem('procurements', {
             id: `PROC-${Math.floor(100 + Math.random() * 900)}`,
+            item: type,
             resourceType: type,
             quantity: qty,
             department: user.department,
+            requester: user.name,
             requestedBy: user.name,
-            status: "Pending",
+            status: "Approved", // Dept Head self-approves their own requests, so it bypasses them and goes to Registrar
             date: new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric', year:'numeric'}),
             justification: reason
         });
 
-        alert("Procurement Request submitted to Registrar.");
+        Store.showToast("Procurement Request submitted and auto-approved for Registrar.", "success");
         document.getElementById('procurementForm').reset();
         this.renderProcurements();
     },
